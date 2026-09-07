@@ -1,5 +1,11 @@
-FROM nginx:alpine
+FROM python:3.11-slim
 
-COPY index.html /usr/share/nginx/html/index.html
+WORKDIR /app
 
-EXPOSE 80
+COPY . .
+
+RUN pip install --no-cache-dir flask gunicorn
+
+EXPOSE 10000
+
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
