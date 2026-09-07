@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI ကမ္ဘာ</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#070912;
+    color:white;
+    min-height:100vh;
+}
+
+header{
+    padding:20px;
+    text-align:center;
+    border-bottom:1px solid #25283a;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#9b7cff;
+}
+
+.subtitle{
+    margin-top:8px;
+    color:#aaa;
+    font-size:14px;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:25px 18px;
+}
+
+.hero{
+    text-align:center;
+    margin:25px 0 30px;
+}
+
+.hero h1{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:#aaa;
+    line-height:1.7;
+}
+
+.card{
+    background:#111522;
+    border:1px solid #272c40;
+    border-radius:20px;
+    padding:20px;
+}
+
+.upload{
+    border:2px dashed #6d5ce7;
+    border-radius:16px;
+    padding:30px 15px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.upload-icon{
+    font-size:45px;
+}
+
+.upload p{
+    color:#aaa;
+    font-size:14px;
+}
+
+input[type=file]{
+    display:none;
+}
+
+.file-name{
+    margin-top:10px;
+    color:#bcaeff;
+    font-size:13px;
+}
+
+label.title{
+    display:block;
+    margin-top:22px;
+    margin-bottom:9px;
+    font-weight:bold;
+}
+
+select{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid #30364c;
+    background:#181c2b;
+    color:white;
+    font-size:15px;
+}
+
+.ratios{
+    display:flex;
+    gap:10px;
+}
+
+.ratio{
+    flex:1;
+    background:#181c2b;
+    border:1px solid #30364c;
+    padding:13px;
+    text-align:center;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.ratio.active{
+    border-color:#8b72ff;
+    background:#292345;
+}
+
+button{
+    width:100%;
+    border:0;
+    margin-top:25px;
+    padding:16px;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+    background:linear-gradient(90deg,#7657ff,#b44cff);
+}
+
+.status{
+    display:none;
+    margin-top:20px;
+    padding:15px;
+    background:#181c2b;
+    border-radius:12px;
+    text-align:center;
+    color:#bbb;
+}
+
+footer{
+    text-align:center;
+    color:#666;
+    font-size:12px;
+    padding:30px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo"> <span>AI</span> ကမ္ဘာ</div>
+    <div class="subtitle">AI Story Video Generator</div>
+</header>
+
+<div class="container">
+
+    <div class="hero">
+        <h1>သင့်ဇာတ်လမ်းကို အသက်သွင်းပါ </h1>
+        <p>
+            သင့်အသံဖိုင်ကို တင်ပြီး AI ဖြင့်
+            ဇာတ်လမ်းနှင့်လိုက်ဖက်သော Video ဖန်တီးပါ။
+        </p>
+    </div>
+
+    <div class="card">
+
+        <label class="upload" for="audioFile">
+
+            <div class="upload-icon"></div>
+
+            <h3>အသံဖိုင်တင်ရန်</h3>
+
+            <p>MP3  WAV  M4A</p>
+
+            <div class="file-name" id="fileName">
+                ဖိုင်မရွေးရသေးပါ
+            </div>
+
+        </label>
+
+        <input
+            type="file"
+            id="audioFile"
+            accept="audio/*"
+        >
+
+        <label class="title">
+             Video Style
+        </label>
+
+        <select id="style">
+            <option value="cinematic"> Cinematic</option>
+            <option value="realistic"> Realistic</option>
+            <option value="anime"> Anime</option>
+            <option value="horror"> Horror</option>
+            <option value="fantasy"> Fantasy</option>
+        </select>
+
+        <label class="title">
+             Video Size
+        </label>
+
+        <div class="ratios">
+
+            <div class="ratio active" onclick="selectRatio(this)">
+                9:16<br>
+                <small>TikTok</small>
+            </div>
+
+            <div class="ratio" onclick="selectRatio(this)">
+                16:9<br>
+                <small>YouTube</small>
+            </div>
+
+            <div class="ratio" onclick="selectRatio(this)">
+                1:1<br>
+                <small>Square</small>
+            </div>
+
+        </div>
+
+        <button onclick="generateVideo()">
+             AI Video ဖန်တီးမည်
+        </button>
+
+        <div class="status" id="status">
+             AI က သင့်ဇာတ်လမ်းကို ပြင်ဆင်နေပါသည်...
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    AI ကမ္ဘာ  2026
+</footer>
+
+
+<script>
+
+const audioFile = document.getElementById("audioFile");
+
+audioFile.addEventListener("change", function(){
+
+    if(this.files.length > 0){
+
+        document.getElementById("fileName").innerText =
+        " " + this.files[0].name;
+
+    }
+
+});
+
+
+function selectRatio(element){
+
+    document.querySelectorAll(".ratio")
+    .forEach(item => item.classList.remove("active"));
+
+    element.classList.add("active");
+
+}
+
+
+function generateVideo(){
+
+    const file = audioFile.files[0];
+
+    if(!file){
+
+        alert("အသံဖိုင်တစ်ခု အရင်ရွေးပါ ");
+        return;
+
+    }
+
+    const status = document.getElementById("status");
+
+    status.style.display = "block";
+
+    status.innerHTML =
+    " အသံဖိုင်ရရှိပါပြီ<br><br>" +
+    " AI Video Engine ကို နောက်တစ်ဆင့်တွင် ချိတ်ဆက်ပါမည်။";
+
+}
+
+</script>
+
+</body>
+</html>
